@@ -43,6 +43,16 @@ const registerUser = asyncHandler( async(req, res) => {
     }
 })
 
+const getMe= asyncHandler( async(req, res) => {
+    const user = {
+        id: req.user._id,
+        email: req.user.email,
+        name: req.user.name,
+    }
+    res.status(200).json(req.user)
+    res.send('me')
+})
+
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: '30d',
@@ -61,11 +71,12 @@ const loginUser = asyncHandler( async(req, res) => {
         })
     } else {
         res.status(401)
-        throw new error('Incorrect credentials')
+        throw new Error('Incorrect credentials')
     }
 })
 
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    getMe,
 }
