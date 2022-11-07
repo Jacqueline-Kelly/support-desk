@@ -43,19 +43,24 @@ const registerUser = asyncHandler( async(req, res) => {
     }
 })
 
-const getMe= asyncHandler( async(req, res) => {
+const getMe = asyncHandler( async(req, res) => {
+    if(!req.params.id) {
+        res.status(401)
+        throw new Error('Please enter id, name, and email')
+        
+    }
+    
     const user = {
         id: req.user._id,
         email: req.user.email,
         name: req.user.name,
     }
     res.status(200).json(req.user)
-    res.send('me')
 })
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d',
+        expiresIn: '300d',
     })
 }
 
@@ -67,7 +72,8 @@ const loginUser = asyncHandler( async(req, res) => {
         res.status(200).json({
             _id: user._id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            token: generateToken(user._id)
         })
     } else {
         res.status(401)
